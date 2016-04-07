@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Friend's filter</title>
+	
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/bundle.min.css">
+	<script src= "http://vk.com/js/api/openapi.js" type="text/javascript"></script>
+	<script src="js/script.js"></script>
+</body>
+	
+	<script src="js/handlebars-v4.0.5.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="app">
+			<div class="select">
+				<h1 class="select__title">Выберете друзей</h1>
+				<div class="select__close-btn"></div>
+			</div>
+			<div class="friends-container">
+				<div class="friends">
+					<form class="friends__search" action="">
+						<input class="friends__input" type="text" placeholder="Начните вводить имя друга">
+					</form>
+					<h2 class="friends__yours">Ваши друзья</h2>
+					<div id="friendsList"></div>
+					
+				</div>
+				<div class="elect-friends">
+					<form class="elect-friends__search" action="">
+						<input class="friends__input" type="text" placeholder="Название">
+					</form>
+					<h2 class="elect-friends__yours">Друзья в списке</h2>
+					<ul class="elect-friends__list">
+						
+					</ul>
+				</div>
+			</div><!--friends-container end-->
+			<div class="save"><a class="save__link" href="#">Сохранить</a></div>
+		</div>
+	</div>
+	<script id="userlistTemplate" type="text/x-handlebars-template">
+  		<ul class="friends__list">
+  		{{#each list}}
+			<li class="friends__item" data-id="{{./uid}}">
+				<div class="friends__wrapper">
+					<img src="{{./photo_50}}" alt="" class="friends__avatar" data-src="{{domain}}">
+				</div>
+				<div class="friends__name">{{./first_name}} {{./last_name}}</div>
+				<div class="friends__add"></div>
+			</li>
+		{{/each}}
+		</ul>
+</script>
+
+	</body>
+</html>

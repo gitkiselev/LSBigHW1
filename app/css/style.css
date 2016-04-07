@@ -1,0 +1,175 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+ol, ul {
+	list-style-type: none;
+}
+body {
+	background-color: #999999;
+	//font-family: FiraSans;
+}
+.container {
+	width: 620px;
+	min-height: 600px;
+	margin: 0 auto;
+}
+.app {
+	background-color: #fff;
+	border-radius: 10px;
+	overflow: hidden;
+	height: 490px;
+	width: 620px;
+}
+.friends__search,
+.elect-friends__search {
+	background-color: #F0F0F0;
+	text-align: center;
+}
+.friends__input {
+	width: 285px;
+	height: 26px;
+	background-color: white;
+	background-image: url(../img/search-icon.png);
+	background-repeat: no-repeat;
+	background-position: 7px 50%;
+	border-radius: 13px;
+	padding-left: 28px;
+	margin: 10px auto 9px;
+	outline: none;
+	border: 0;
+}
+.select {
+	
+	background-color: #FF8862;
+	color: #fff;
+	position: relative;
+	
+}
+.select__title {
+	font-size: 16px;
+	margin: 0;
+	padding: 14px 16px;
+	
+}
+.friends__yours,
+.elect-friends__yours {
+	border-bottom: 1px solid #F0F0F0;
+	margin: 0 12px;
+	padding: 8px 0;
+	font-size: 12px;
+}
+.select__close-btn {
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	top: 18px;
+	right: 15px;
+	background-image: url(../img/close-btn.png);
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+.friends {
+	border-right: 1px solid #F0F0F0;
+}
+.friends-container {
+	font-size: 0;
+}
+.friends, .elect-friends {
+	display: inline-block;
+	vertical-align: top;
+	font-size: 12px;
+	font-weight: bold;
+	width: 50%;
+}
+.friends__list {
+	overflow-y: auto;
+	height: 323px;
+}
+.friends__item {
+	//position: relative;
+	//margin-bottom: 6px;
+	padding: 7px 6px;
+	display: block;
+	min-height: 60px;
+	transition: all 0.3s ease;
+	border-bottom: 1px solid #F0F0F0;
+	cursor: move;
+}
+.friends__item:hover {
+	background-color: #F0F0F0;
+}
+.friends__item:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+.friends__wrapper {
+	display: inline-block;
+	vertical-align: middle;
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+.friends__name {
+	display: inline-block;
+  	vertical-align: middle;
+  	width: 200px;
+}
+
+.friends__name:before { /* для IE8+ */
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+.friends__add {
+	display: inline-block;
+	vertical-align: middle;
+	width: 17px;
+	height: 17px;
+	background-image: url(../img/add-btn.png);
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+.friends__added {
+	display: inline-block;
+	vertical-align: middle;
+	background-image: url(../img/remove-btn.png);
+	width: 14px;
+	height: 14px;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	
+}	
+.save {
+	position: relative;
+	background-color: #F0F0F0;
+	height: 45px;
+}
+.save__link {
+	position: absolute;
+	//display: block;
+	//z-index: 10;
+	background-color: #ff8663;
+	text-decoration: none;
+	font-size: 12px;
+	color: #fff;
+	padding: 8px 13px;
+	top: 8px;
+	right: 7px;
+	border-radius: 10px;
+	transition: all 0.3s ease;
+}
+.save__link:hover {
+	background-color: #D7825F;
+}	
+.elect-friends__list {
+	height: 323px;
+	overflow-y: auto;
+}
+.over {
+	border: 2px dashed #000;
+}
