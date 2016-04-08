@@ -1,10 +1,18 @@
+
+var filteredArray = [];
+
+var	  baseFriends = [];
+	
+
 new Promise(function(resolve){
 	if(document.readyState === 'complete'){
+		
 		resolve();
 	} else{
 		window.onload = resolve;
 	}
 }).then(function(){
+
 	return new Promise(function(resolve, reject){
 		VK.init({
 			apiId: 5384272
@@ -12,6 +20,7 @@ new Promise(function(resolve){
 		VK.Auth.login(function(response){
 			if (response.session){
 				   //console.log('Авторизация прошла успешно');
+				   
 				   resolve(response);
 			}
 				else {
@@ -20,51 +29,65 @@ new Promise(function(resolve){
 		},2);
 	});
 }).then(function(){
+
+
 	return new Promise(function(resolve, reject){
+
 		VK.api('friends.get', {fields: "uid,photo_50"}, function(response){
+			
+			baseFriends = response.response; //Сохранение данных
+
 			console.log(response);
 			if(response.error){
 				reject(new Error(response.error.error_msg));
 			}else{
 				var source = userlistTemplate.innerHTML;
 				templateFn = Handlebars.compile(source);
-				template   = templateFn({list: response.response});
+				var prep_array = response.response.map(function(t){
+					var a = t;
+					a.right = 0;
+					return a;
+				});
+				template   = templateFn({list: prep_array});
+				prep_array = response.response.map(function(t){
+					var a = t;
+					a.right = 1;
+					return a;
+				});
+				template2  = templateFn({list: prep_array});
 				friendsList.innerHTML = template;
+				friendsListSorted.innerHTML = template2;
+				var rightContainer = friendsListSorted.querySelectorAll('.friends__item');
+				for (var i = 0; i < rightContainer.length; i++){
+					rightContainer[i].classList.add('hide');
+				}
 				resolve();
 			}
 		})
 	})
 }).then(function(){
-	//Перенос друзей в правую колонку по клику на знак плюс
-	var plusButton = document.querySelectorAll('.friends__add');
-	var electList = document.querySelector('.elect-friends__list');
-	var frItem = document.querySelectorAll('.friends__item');
-	var frList = document.querySelector('.friends__list');
-
-	frList.addEventListener('click', function(event){
-		//console.log('работает');
-		var target = event.target;
-		if (target.classList.contains('friends__add')) {
-			electList.appendChild(target.parentNode);
-			//target.style.backgroundImage = 'url(../img/remove-btn.png)';
-			//target.style.width = '14px';
-			//target.style.heigth = '14px';
-			target.classList.remove('friends__add');
-			target.classList.add('friends__added');
+	
+	//Перенос друзей в правую колонку по клику на знак "+"
+	friendsList.addEventListener('click',function(e){
+		if (e.target.classList.contains('friends__add')){
+			var fValue = e.target.closest('.friends__item').getAttribute('data-id');
+			friendsList.querySelector('[data-id="'+ fValue +'"]').classList.add('hide');
+			friendsListSorted.querySelector('[data-id="'+ fValue +'"]').classList.remove('hide');
+			filteredArray.push(fValue);
 		}
-		
+		console.log(filteredArray);
 	});
+	
 }).then(function(){
-	//console.log('Здесь будет код для обратного переброса');
-	var electList = document.querySelector('.elect-friends__list');
-	var frList = document.querySelector('.friends__list');
-	electList.addEventListener('click', function(){
-		var target = event.target;
-		if (target.classList.contains('friends__added')) {
-			frList.appendChild(target.parentNode);
-			target.classList.add('friends__add');
-			target.classList.remove('friends__added');
+	//Перенос добавленных друзей в левую колонку по клику на знак "x"
+	friendsListSorted.addEventListener('click',function(e){
+		if (e.target.classList.contains('friends__added')){
+			var fValue = e.target.closest('.friends__item').getAttribute('data-id');
+			friendsList.querySelector('[data-id="'+ fValue +'"]').classList.remove('hide');
+			friendsListSorted.querySelector('[data-id="'+ fValue +'"]').classList.add('hide');
+			filteredArray = filteredArray.filter(function(t){ return t != fValue });
 		}
+		console.log(filteredArray);
 	});
 }).then(function(){
 	console.log('Здесь будет перетаскивание элементов');
@@ -79,60 +102,123 @@ new Promise(function(resolve){
 	function dragStart(e){
 		console.log("dragStart");
 		e.dataTransfer.effectAllowed = "move";
-		var qq = e.dataTransfer.setData("text", e.target.getAttribute('data-id'));
+		e.dataTransfer.setData("text", e.target.getAttribute('data-id'));
 		return true;
-		
 	}
+	
 	function dragOver(e){
-		console.log('dragover');
 		e.preventDefault();
 	}
+	
 	function dragDrop(e){
-		
-            
-		
 		console.log('drop');
 		e.preventDefault();
-		e.dataTransfer.getData('text/plain', e.target.getAttribute('data-id'));
-		var electList = document.querySelector('.elect-friends__list');
-		for(var i = 0; i < electList.length; i++) {
-			
-			electList.appendChild(qq);
-		}
-		
-		
+		var friendDrop = e.dataTransfer.getData('text');
+		console.log('droped:'+ friendDrop);
+		var dropZone = document.querySelector('.elect-friends__list');
+		var electList = document.querySelector('#friendsListSorted [data-id="'+ friendDrop +'"]');
+		var baseList = document.querySelector('#friendsList [data-id="'+ friendDrop +'"]');
+		filteredArray.push(friendDrop);
+		console.log(filteredArray);
+		electList.classList.remove('hide');
+		baseList.classList.add('hide');
 		return false;
 	}
-	
-	var electList = document.querySelector('.elect-friends__list');
-	for(var i = 0; i < electList.length; i++) {
-		electList.addEventListener('dragstart', dragStart, false);
+
+	function dragDropBack(e){
+		console.log('backDrop');
+		e.preventDefault();
+		var friendDrop = e.dataTransfer.getData('text');
+		console.log('dropedback:'+ friendDrop);
+		var backDropZone = document.querySelector('.friends__list');
+		var electList = document.querySelector('#friendsListSorted [data-id="'+ friendDrop +'"]');
+		var baseList = document.querySelector('#friendsList [data-id="'+ friendDrop +'"]');
+		baseFriends.push(friendDrop);
+		console.log(baseFriends);
+		electList.classList.add('hide');
+		baseList.classList.remove('hide');
+		return false;
+
 	}
-	
-	var electList = document.querySelector('.elect-friends__list');
-	electList.addEventListener('dragover', dragOver, false);
-	electList.addEventListener('drop', dragDrop, false);
-	
-	
-	
+	//Получим коллекцию друзей для того, чтобы навесить обработчик события 'dragstart' на каждого
+	var electList = document.querySelectorAll('.friends__item');
+	for(var i = 0; i < electList.length; i++) {
+		electList[i].addEventListener('dragstart', dragStart, false);
+	}
+	//Правая зона приемки
+	var dropZone = document.querySelector('#friendsListSorted > ul');
+	//Левая зона приемки
+	var backDropZone = document.querySelector('#friendsList > ul');
+	//Перетаскивание друзей в правую колону
+	dropZone.addEventListener('dragover', dragOver, false);
+	dropZone.addEventListener('drop', dragDrop, false);
+	//Перетаскивание друзей обратно в левую колонку
+	backDropZone.addEventListener('dragover', dragOver, false);
+	backDropZone.addEventListener('drop', dragDropBack, false);
 
+	
+	//Поиск в правой форме
+
+	rightSearch.addEventListener('keyup',function(e){
+		var search = this.value;
+
+		var filteredFriendArray = baseFriends.filter(function(e){
+			return filteredArray.some(function(t){ return t == e.uid })
+		}).filter(function(t){
+			return (t.first_name + ' ' + t.last_name).toLowerCase().indexOf(search.toLowerCase()) != -1;
+		});
+
+		
+		var allRightFriends = friendsListSorted.querySelectorAll('.friends__item:not(.hide)');
+		for (var i = 0; i < allRightFriends.length; i++){
+			if (filteredFriendArray.some(function(t){ return t.uid == allRightFriends[i].getAttribute('data-id') })) {
+				allRightFriends[i].classList.remove('searched');
+			} else {
+				allRightFriends[i].classList.add('searched');
+			}
+		}
+
+	});
+	//Поиск в левой форме
+
+	leftSearch.addEventListener('keyup', function(){
+		var search = this.value;
+
+		var filteredFriendArray = baseFriends.filter(function(t){
+			return (t.first_name + ' ' + t.last_name).toLowerCase().indexOf(search.toLowerCase()) != -1;
+		})
+
+
+		var allLeftFriends = friendsList.querySelectorAll('.friends__item');
+		for (var i = 0; i < allLeftFriends.length; i++){
+			if (filteredFriendArray.some(function(t){ return t.uid == allLeftFriends[i].getAttribute('data-id') })) {
+				allLeftFriends[i].classList.remove('searched');
+			} else {
+				allLeftFriends[i].classList.add('searched');
+			}
+		}
+
+
+
+
+	});
+	
+	
+}).then(function(){
+	console.log('здесь будем сохранять в Local Storage');
+	//var filteredArray;
+	var saveElectList = document.querySelector('.save');
+	saveElectList.addEventListener('click', function(){
+		console.log('press button save');
+		localStorage.clear();//очищаем перед сохранением
+		localStorage.filteredArray = JSON.stringify(filteredArray);
+		localStorage.baseFriends   = JSON.stringify(baseFriends);
+	}, false);
+
+	
+}).then(function(){
+	console.log('!');
+	//filteredArray = localStorage.filteredArray ? JSON.parse(localStorage.filteredArray) : [];
+	var filteredArray = localStorage.filteredArray ? JSON.parse(localStorage.filteredArray) : [];
 });
-
-
-
-
-
-
-
-
-
-		
-
-		
-
-
-
-
-
-
 

@@ -18,12 +18,12 @@
 		<div class="app">
 			<div class="select">
 				<h1 class="select__title">Выберете друзей</h1>
-				<div class="select__close-btn"></div>
+				<div id="closeApp" class="select__close-btn"></div>
 			</div>
 			<div class="friends-container">
 				<div class="friends">
 					<form class="friends__search" action="">
-						<input class="friends__input" type="text" placeholder="Начните вводить имя друга">
+						<input class="friends__input" type="text" placeholder="Начните вводить имя друга" id="leftSearch">
 					</form>
 					<h2 class="friends__yours">Ваши друзья</h2>
 					<div id="friendsList"></div>
@@ -31,12 +31,10 @@
 				</div>
 				<div class="elect-friends">
 					<form class="elect-friends__search" action="">
-						<input class="friends__input" type="text" placeholder="Название">
+						<input class="friends__input" type="text" placeholder="Название" id="rightSearch">
 					</form>
 					<h2 class="elect-friends__yours">Друзья в списке</h2>
-					<ul class="elect-friends__list">
-						
-					</ul>
+					<div id="friendsListSorted"></div>
 				</div>
 			</div><!--friends-container end-->
 			<div class="save"><a class="save__link" href="#">Сохранить</a></div>
@@ -50,7 +48,11 @@
 					<img src="{{./photo_50}}" alt="" class="friends__avatar" data-src="{{domain}}">
 				</div>
 				<div class="friends__name">{{./first_name}} {{./last_name}}</div>
-				<div class="friends__add"></div>
+				{{#if right}}
+					<div class="friends__added"></div>
+				{{else}}
+					<div class="friends__add"></div>
+				{{/if}}
 			</li>
 		{{/each}}
 		</ul>

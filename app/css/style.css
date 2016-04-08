@@ -173,3 +173,11 @@ body {
 .over {
 	border: 2px dashed #000;
 }
+
+.hide {
+	display: none;
+}
+
+.searched {
+	display: none;
+}
