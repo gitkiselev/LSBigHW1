@@ -1,7 +1,8 @@
 
 var filteredArray = [];
-
 var	  baseFriends = [];
+
+
 	
 
 new Promise(function(resolve){
@@ -36,7 +37,7 @@ new Promise(function(resolve){
 		VK.api('friends.get', {fields: "uid,photo_50"}, function(response){
 			
 			baseFriends = response.response; //Сохранение данных
-
+			
 			console.log(response);
 			if(response.error){
 				reject(new Error(response.error.error_msg));
@@ -70,10 +71,10 @@ new Promise(function(resolve){
 	//Перенос друзей в правую колонку по клику на знак "+"
 	friendsList.addEventListener('click',function(e){
 		if (e.target.classList.contains('friends__add')){
-			var fValue = e.target.closest('.friends__item').getAttribute('data-id');
-			friendsList.querySelector('[data-id="'+ fValue +'"]').classList.add('hide');
-			friendsListSorted.querySelector('[data-id="'+ fValue +'"]').classList.remove('hide');
-			filteredArray.push(fValue);
+			var fValue = e.target.closest('.friends__item').getAttribute('data-id');//берем выбранного друга
+			friendsList.querySelector('[data-id="'+ fValue +'"]').classList.add('hide');//ставим ему display: none в левом столбце
+			friendsListSorted.querySelector('[data-id="'+ fValue +'"]').classList.remove('hide');//ставим display: block в правом столбце
+			filteredArray.push(fValue);//добавляем в правй массив отсортированных друзей
 		}
 		console.log(filteredArray);
 	});
@@ -211,14 +212,17 @@ new Promise(function(resolve){
 	saveElectList.addEventListener('click', function(){
 		console.log('press button save');
 		localStorage.clear();//очищаем перед сохранением
-		localStorage.filteredArray = JSON.stringify(filteredArray);
-		localStorage.baseFriends   = JSON.stringify(baseFriends);
+		//localStorage.filteredArray = JSON.stringify(filteredArray);
+		//localStorage.baseFriends   = JSON.stringify(baseFriends);
+		//var filteredArray = [];
+		var fA = localStorage.setItem('filteredArray', JSON.stringify(filteredArray));
+		//var sF = JSON.parse(localStorage.getItem('filteredArray'));
 	}, false);
 
 	
 }).then(function(){
 	console.log('!');
-	//filteredArray = localStorage.filteredArray ? JSON.parse(localStorage.filteredArray) : [];
-	var filteredArray = localStorage.filteredArray ? JSON.parse(localStorage.filteredArray) : [];
+	
+	localStorage.filteredArray ? JSON.parse(localStorage.filteredArray) : [];
 });
 
