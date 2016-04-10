@@ -37,7 +37,7 @@ new Promise(function(resolve){
 		VK.api('friends.get', {fields: "uid,photo_50"}, function(response){
 			
 			baseFriends = response.response; //Сохранение данных
-			
+		
 			console.log(response);
 			if(response.error){
 				reject(new Error(response.error.error_msg));
@@ -212,17 +212,19 @@ new Promise(function(resolve){
 	saveElectList.addEventListener('click', function(){
 		console.log('press button save');
 		localStorage.clear();//очищаем перед сохранением
-		//localStorage.filteredArray = JSON.stringify(filteredArray);
+		localStorage.filteredArray = JSON.stringify(filteredArray);
 		//localStorage.baseFriends   = JSON.stringify(baseFriends);
-		//var filteredArray = [];
-		var fA = localStorage.setItem('filteredArray', JSON.stringify(filteredArray));
-		//var sF = JSON.parse(localStorage.getItem('filteredArray'));
+		//localStorage.getItem('filteredArray');
+		
+		
+		
 	}, false);
 
 	
 }).then(function(){
 	console.log('!');
+	var qq = filteredArray = localStorage.filteredArray ? JSON.parse(localStorage.filteredArray) : [];
 	
-	localStorage.filteredArray ? JSON.parse(localStorage.filteredArray) : [];
+	
 });
 
