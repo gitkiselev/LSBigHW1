@@ -1,6 +1,7 @@
 
 var filteredArray = [];
 var	  baseFriends = [];
+//var savedFriendsList;
 
 
 	
@@ -36,7 +37,7 @@ new Promise(function(resolve){
 
 		VK.api('friends.get', {fields: "uid,photo_50"}, function(response){
 			
-			//baseFriends = response.response; //Сохранение данных
+			baseFriends = response.response; //Сохранение данных
 			
 			console.log(response);
 			if(response.error){
@@ -45,15 +46,21 @@ new Promise(function(resolve){
 				/*изменения*/
 				if (localStorage.getItem('savedFriendsList')){
 					var savedFriendsList = localStorage.getItem('savedFriendsList');
-						savedFriendsList = JSON.parse(savedFriendsList);
-					var filteredArray = savedFriendsList;	
+					var	savedFriendsList = JSON.parse(savedFriendsList);
+					var filteredArray = savedFriendsList;
+
+					
+				
 				} else {
-					var filteredArray = [];
+				
+					filteredArray = [];
 				}
-				baseFriends = response.response;
+				
 				for (var i = 0; i < baseFriends.length; i++){
+					
 					for (var j = 0; j < filteredArray.length; j++){
-						if (baseFriends[i].uid == filteredArray[j].uid){
+						
+						if (baseFriends[i].uid === filteredArray[j].uid){
 							baseFriends.splice(i, 1);
 						}
 					}
@@ -94,7 +101,7 @@ new Promise(function(resolve){
 			var fValue = e.target.closest('.friends__item').getAttribute('data-id');//берем выбранного друга
 			friendsList.querySelector('[data-id="'+ fValue +'"]').classList.add('hide');//ставим ему display: none в левом столбце
 			friendsListSorted.querySelector('[data-id="'+ fValue +'"]').classList.remove('hide');//ставим display: block в правом столбце
-			filteredArray.push(fValue);//добавляем в правй массив отсортированных друзей
+			filteredArray.push(fValue);//добавляем в правый массив отсортированных друзей
 		}
 		console.log(filteredArray);
 	});
@@ -219,22 +226,17 @@ new Promise(function(resolve){
 			}
 		}
 
-
-
-
 	});
 	
 	
 }).then(function(){
 	console.log('здесь будем сохранять в Local Storage');
-	//var filteredArray;
 	var saveButton = document.querySelector('.save__link');
 	saveButton.addEventListener('click', function(e){
 		e.preventDefault();
 		console.log('press button save');
 		localStorage.clear();//очищаем перед сохранением
 		localStorage.setItem('savedFriendsList', JSON.stringify(filteredArray));
-		
 	}, false);
 
 	
