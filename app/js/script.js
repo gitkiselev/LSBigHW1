@@ -20,7 +20,7 @@ new Promise(function(resolve){
 		});
 		VK.Auth.login(function(response){
 			if (response.session){
-				   //console.log('Авторизация прошла успешно');
+				   
 				   
 				   resolve(response);
 			}
@@ -36,12 +36,32 @@ new Promise(function(resolve){
 
 		VK.api('friends.get', {fields: "uid,photo_50"}, function(response){
 			
-			baseFriends = response.response; //Сохранение данных
+			//baseFriends = response.response; //Сохранение данных
 			
 			console.log(response);
 			if(response.error){
 				reject(new Error(response.error.error_msg));
 			}else{
+				/*изменения*/
+				if (localStorage.getItem('savedFriendsList')){
+					var savedFriendsList = localStorage.getItem('savedFriendsList');
+						savedFriendsList = JSON.parse(savedFriendsList);
+					var filteredArray = savedFriendsList;	
+				} else {
+					var filteredArray = [];
+				}
+				baseFriends = response.response;
+				for (var i = 0; i < baseFriends.length; i++){
+					for (var j = 0; j < filteredArray.length; j++){
+						if (baseFriends[i].uid == filteredArray[j].uid){
+							baseFriends.splice(i, 1);
+						}
+					}
+				}
+				/*конец*/
+
+
+
 				var source = userlistTemplate.innerHTML;
 				templateFn = Handlebars.compile(source);
 				var prep_array = response.response.map(function(t){
@@ -208,21 +228,19 @@ new Promise(function(resolve){
 }).then(function(){
 	console.log('здесь будем сохранять в Local Storage');
 	//var filteredArray;
-	var saveElectList = document.querySelector('.save');
-	saveElectList.addEventListener('click', function(){
+	var saveButton = document.querySelector('.save__link');
+	saveButton.addEventListener('click', function(e){
+		e.preventDefault();
 		console.log('press button save');
 		localStorage.clear();//очищаем перед сохранением
-		//localStorage.filteredArray = JSON.stringify(filteredArray);
-		//localStorage.baseFriends   = JSON.stringify(baseFriends);
-		//var filteredArray = [];
-		var fA = localStorage.setItem('filteredArray', JSON.stringify(filteredArray));
-		//var sF = JSON.parse(localStorage.getItem('filteredArray'));
+		localStorage.setItem('savedFriendsList', JSON.stringify(filteredArray));
+		
 	}, false);
 
 	
 }).then(function(){
 	console.log('!');
 	
-	localStorage.filteredArray ? JSON.parse(localStorage.filteredArray) : [];
+	
 });
 
