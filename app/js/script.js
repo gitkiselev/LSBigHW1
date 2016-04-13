@@ -239,8 +239,8 @@ new Promise(function(resolve){
 
 	
 }).then(function(){
-	/*console.log('Блок закрытия окна');
-	var closeWindow = document.querySelector('.select__close-btn');
+	console.log('Блок закрытия окна');
+	/*var closeWindow = document.querySelector('.select__close-btn');
 	closeWindow.addEventListener('click', function(){
 		console.log('Нажали на крестик');
 		window.close();
