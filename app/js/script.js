@@ -1,10 +1,6 @@
-
 var filteredArray = [];
 var	  baseFriends = [];
-//var savedFriendsList;
 
-
-	
 
 new Promise(function(resolve){
 	if(document.readyState === 'complete'){
@@ -36,8 +32,36 @@ new Promise(function(resolve){
 	return new Promise(function(resolve, reject){
 
 		VK.api('friends.get', {fields: "uid,photo_50"}, function(response){
-			
 			baseFriends = response.response; //Сохранение данных
+			//Отрисовка
+				var source = userlistTemplate.innerHTML;
+				templateFn = Handlebars.compile(source);
+
+				//Шаблон разметки для левого столбца
+				var prep_array = response.response.map(function(t){
+					var a = t;
+					a.right = 0;
+					return a;
+				});
+				template   = templateFn({list: prep_array});
+
+				//Шаблон разметки для правого столбца
+				prep_array = response.response.map(function(t){
+					var a = t;
+					a.right = 1;
+					return a;
+				});
+				template2  = templateFn({list: prep_array});
+				//
+				friendsList.innerHTML 		= template;
+				friendsListSorted.innerHTML = template2;
+				//
+				var rightContainer = friendsListSorted.querySelectorAll('.friends__item');
+				for (var i = 0; i < rightContainer.length; i++){
+					rightContainer[i].classList.add('hide');
+				}
+			//Окончание отрисовки
+
 			
 			console.log(response);
 			if(response.error){
@@ -47,49 +71,23 @@ new Promise(function(resolve){
 				if (localStorage.getItem('savedFriendsList')){
 					var savedFriendsList = localStorage.getItem('savedFriendsList');
 					var	savedFriendsList = JSON.parse(savedFriendsList);
-					var filteredArray = savedFriendsList;
-
+					filteredArray = savedFriendsList;
+					if(filteredArray.length) {
+						filteredArray.forEach(function(t){
+						document.querySelector('#friendsList [data-id="'+ t +'"]').classList.add('hide');
+						document.querySelector('#friendsListSorted [data-id="'+ t +'"]').classList.remove('hide');
+					})
+					}
 					
 				
+
 				} else {
-				
 					filteredArray = [];
 				}
 				
-				for (var i = 0; i < baseFriends.length; i++){
-					
-					for (var j = 0; j < filteredArray.length; j++){
-						
-						if (baseFriends[i].uid === filteredArray[j].uid){
-							baseFriends.splice(i, 1);
-						}
-					}
-				}
-				/*конец*/
-
-
-
-				var source = userlistTemplate.innerHTML;
-				templateFn = Handlebars.compile(source);
-				var prep_array = response.response.map(function(t){
-					var a = t;
-					a.right = 0;
-					return a;
-				});
-				template   = templateFn({list: prep_array});
-				prep_array = response.response.map(function(t){
-					var a = t;
-					a.right = 1;
-					return a;
-				});
-				template2  = templateFn({list: prep_array});
-				friendsList.innerHTML = template;
-				friendsListSorted.innerHTML = template2;
-				var rightContainer = friendsListSorted.querySelectorAll('.friends__item');
-				for (var i = 0; i < rightContainer.length; i++){
-					rightContainer[i].classList.add('hide');
-				}
 				resolve();
+				
+				
 			}
 		})
 	})
@@ -187,7 +185,7 @@ new Promise(function(resolve){
 	
 	//Поиск в правой форме
 
-	rightSearch.addEventListener('keyup',function(e){
+	rightSearch.addEventListener('keyup', function(e){
 		var search = this.value;
 
 		var filteredFriendArray = baseFriends.filter(function(e){
@@ -241,8 +239,11 @@ new Promise(function(resolve){
 
 	
 }).then(function(){
-	console.log('!');
-	
-	
+	/*console.log('Блок закрытия окна');
+	var closeWindow = document.querySelector('.select__close-btn');
+	closeWindow.addEventListener('click', function(){
+		console.log('Нажали на крестик');
+		window.close();
+	});*/	
 });
 

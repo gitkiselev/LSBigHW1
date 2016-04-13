@@ -21,6 +21,12 @@ body {
 	overflow: hidden;
 	height: 490px;
 	width: 620px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
 }
 .friends__search,
 .elect-friends__search {
@@ -86,6 +92,8 @@ body {
 .friends__list {
 	overflow-y: auto;
 	height: 323px;
+	width: 309px;//
+	margin: 0 auto;
 }
 .friends__item {
 	//position: relative;
